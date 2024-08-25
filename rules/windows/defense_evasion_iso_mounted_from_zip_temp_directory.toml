@@ -1,0 +1,46 @@
+[metadata]
+creation_date = "2024/08/24"
+maturity = "development"
+updated_date = "2024/08/24"
+
+[rule]
+actions = []
+author = ["Jason Deyalsingh"]
+description = """
+This detection identifies an ISO mounted from a zip existing in a temp directory, which is a procedure used by Qakbot to
+perform MOTW bypass. Mark of the web tags exist on Windows operating systems, to inform the user and system when certain
+files were downloaded from the internet. This tag attempts to block or otherwise subvert certain potentially unsafe
+actions from being performed. Mark of the web bypass techniques attempt to deliver files to the end user without this
+tag set, allowing potentially unsafe actions to be taken.
+"""
+filters = []
+from = "now-9m"
+index = ["winlogbeat-*"]
+language = "eql"
+license = "MIT"
+name = "ISO mounted from zip temporary directory"
+note = """## Investigation Suggestions:
+
+The ISO run within the temporary directory should be investigated as possible malware.  Attempt to identify and evaluate the carrier email message that delivered the ISO as a possible phishing email or investigate the domain or website the ISO was downloaded from.  Continue to monitor the endpoint for the "Wermgr running reconnaissance commands" alert which identifies suspicious activity that has been seen occurring after this activity and can be used to confirm the threat as a true positive.
+
+##Responses or Remediations:
+If confirmed as malicious activity, contain the endpoint prior to remediating.  Check all outgoing network connections from the endpoint to identify possible C2.  This activity has been associated with ransomware activity and lateral movement using Brute Ratel and Cobalt Strike.  
+
+##False Positives
+Users can legitimately download a zipped ISO file as a developer or network admin role.  
+"""
+references = [
+    "https://www.trendmicro.com/en_us/research/22/j/black-basta-infiltrates-networks-via-qakbot-brute-ratel-and-coba.html",
+]
+risk_score = 50
+rule_id = "fb64fef7-0537-4564-a83d-a3b578bea1b4"
+setup = "None"
+severity = "medium"
+tags = ["Elastic", "Host", "Windows", "Threat Detection", "Defense Evasion"]
+timestamp_override = "event.ingested"
+type = "eql"
+
+query = '''
+any where event.code=="1" and winlog.channel=="Microsoft-Windows-VHDMP-Operational" and winlog.event_data.VhdFileName like~ ("*Temp*","*.zip*","*.iso")
+'''
+

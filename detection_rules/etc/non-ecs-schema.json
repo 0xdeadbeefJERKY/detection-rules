@@ -54,7 +54,8 @@
         "Status": "keyword",
         "EnabledPrivilegeList": "keyword",
         "Operation": "keyword",
-        "OperationType": "keyword"
+        "OperationType": "keyword",
+        "VhdFileName": "keyword"
       }
     },
     "winlog.logon.type": "keyword",
